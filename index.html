@@ -465,9 +465,6 @@
                 <input type="password" class="form-control" id="adminPassword" placeholder="Mot de passe" required>
             </div>
             <button class="btn" style="width: 100%;" id="loginBtn">Se Connecter</button>
-            <div style="text-align: center; margin-top: 20px; font-size: 0.9rem; color: #666;">
-                <p>Identifiants de test:<br>Utilisateur: <strong>admin</strong><br>Mot de passe: <strong>meatme2025</strong></p>
-            </div>
         </div>
     </div>
 
@@ -481,7 +478,7 @@
                         <i class="fas fa-sync-alt"></i>
                         Actualiser
                     </button>
-                    <a href="index.html" class="btn btn-secondary">
+                    <a href="https://pakopakoxit.github.io/meatme/" class="btn btn-secondary">
                         <i class="fas fa-home"></i>
                         Site Client
                     </a>
@@ -546,7 +543,7 @@
                 localStorage.setItem('meatme_admin_loggedin', 'true');
                 showAdminPanel();
             } else {
-                alert('Identifiants incorrects. Utilisez: admin / meatme2025');
+                alert('Identifiants incorrects.');
             }
         });
 
@@ -563,12 +560,23 @@
         }
 
         // Order Management
-        function getOrders() {
-            return JSON.parse(localStorage.getItem('meatme_orders')) || [];
-        }
+      function getOrders() {
+    return JSON.parse(localStorage.getItem('meatme_orders')) || [];
+}
 
-        function saveOrders(orders) {
-            localStorage.setItem('meatme_orders', JSON.stringify(orders));
+function saveOrders(orders) {
+    localStorage.setItem('meatme_orders', JSON.stringify(orders));
+}
+
+        function deleteOrder(orderId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette commande ? Cette action est irréversible.')) {
+                const orders = getOrders();
+                const updatedOrders = orders.filter(order => order.id !== orderId);
+                saveOrders(updatedOrders);
+                renderOrders();
+                updateAdminStats();
+                showNotification('Commande supprimée avec succès');
+            }
         }
 
         function updateAdminStats() {
@@ -689,6 +697,10 @@
                     
                     <button class="btn btn-sm" onclick="viewOrderDetails('${order.id}')">
                         <i class="fas fa-eye"></i> Détails
+                    </button>
+                    
+                    <button class="btn btn-danger btn-sm" onclick="deleteOrder('${order.id}')">
+                        <i class="fas fa-trash"></i> Supprimer
                     </button>
                 </div>
             `;
